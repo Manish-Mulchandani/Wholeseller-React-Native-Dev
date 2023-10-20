@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 //import OrderDetails from './OrderDetails';
 
@@ -83,20 +83,38 @@ const OrderScreen = () => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <FlatList
         data={orders}
         keyExtractor={(item) => item.order_id.toString()}
         renderItem={({ item }) => (
           <TouchableOpacity
+            style={styles.orderItem}
             onPress={() => handleCustomerNameClick(item.customer_name, item.products)}
           >
-            <Text>Customer Name: {item.customer_name}</Text>
+            <Text style={styles.customerName}>Customer Name: {item.customer_name}</Text>
           </TouchableOpacity>
         )}
       />
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+  },
+  orderItem: {
+    backgroundColor: '#f0f0f0',
+    borderRadius: 8,
+    padding: 16,
+    marginBottom: 16,
+  },
+  customerName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+});
 
 export default OrderScreen;

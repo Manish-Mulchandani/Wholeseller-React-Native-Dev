@@ -44,7 +44,7 @@ const ProductScreen = () => {
             <Image source={{ uri: item.image }} style={styles.productImage} />
             <View style={styles.productInfo}>
               <Text style={styles.productTitle}>{item.title}</Text>
-              <Text style={styles.productQuantity}>Price: {item.price}</Text>
+              <Text style={styles.productQuantity}>Price: Rs.{item.price}</Text>
               <Button title="Update" onPress={() => console.log("Update Products")} />
             </View>
           </View>

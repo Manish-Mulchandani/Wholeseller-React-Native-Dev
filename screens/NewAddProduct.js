@@ -1,14 +1,20 @@
 import {View, Text, StyleSheet, Image, ScrollView, Alert} from 'react-native';
 import React, {useState} from 'react';
 import {Button, RadioButton, TextInput} from 'react-native-paper';
-import {Account, Client} from 'appwrite';
+import {Account, Client, Databases} from 'appwrite';
 import {launchImageLibrary} from 'react-native-image-picker';
+import 'react-native-get-random-values';
+import { v4 as uuidv4 } from 'uuid';
+
 const API_URL = 'https://cloud.appwrite.io/v1';
 const PROJECT_ID = '652fa3f6300f32d17993';
 const BUCKET_ID = '652ffbcacdbb0f80832b';
+const DATABASE_ID = '6532eaf0a394c74aeb32'
+const COLLECTION_ID = '6532eafc7e2ef6e5f9fb'
 
 const client = new Client();
 const account = new Account(client);
+const databases = new Databases(client);
 
 client.setEndpoint(API_URL).setProject(PROJECT_ID); // Replace with your project ID
 
@@ -26,7 +32,7 @@ promise.then(
 const NewAddProduct = () => {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
-  const [availability, setAvailability] = useState('yes');
+  const [availability, setAvailability] = useState(true);
 
   const [image, setImage] = useState(null);
   const [uri, setUri] = useState(null);
@@ -113,9 +119,28 @@ const NewAddProduct = () => {
     console.log('Image URI:', image);
     Alert.alert('Product Added', 'Producte Added successfully');
     // You can make an API request to create the product with this data
+    const promise = databases.createDocument(
+      DATABASE_ID,COLLECTION_ID,uuidv4(), {
+        Name: name,
+        Price: price,
+        Available: availability,
+        Image: image
+      }
+    );
+    console.log("second")
+
+    promise.then(
+      function (response) {
+        console.log(response); // Success
+      },
+      function (error) {
+        console.log(error); // Failure
+      },
+    );
+    
     setName(null);
     setPrice(null);
-    setAvailability(null);
+    setAvailability(true);
 
     setImage(null);
     setUri(null);
@@ -168,11 +193,11 @@ const NewAddProduct = () => {
       <RadioButton.Group onValueChange={value => setAvailability(value)} value={availability}>
         <View style={styles.radioButtonContainer}>
           <Text>Yes</Text>
-          <RadioButton value="yes" />
+          <RadioButton value={true} />
         </View>
         <View style={styles.radioButtonContainer}>
           <Text>No</Text>
-          <RadioButton value="no" />
+          <RadioButton value={false} />
         </View>
       </RadioButton.Group>
 

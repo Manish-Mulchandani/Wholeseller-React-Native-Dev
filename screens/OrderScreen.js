@@ -1,6 +1,32 @@
 import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Client, Databases } from 'appwrite';
+
+const DATABASE_ID = '6532eaf0a394c74aeb32'
+const COLLECTION_ID = '6533aad5270260d0d839'
+const PROJECT_ID = '652fa3f6300f32d17993'
+
+const client = new Client();
+
+client
+  .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
+  .setProject(PROJECT_ID); // Your project ID
+
+  const databases = new Databases(client);
+
+  const promise = databases.listDocuments(DATABASE_ID, COLLECTION_ID);
+
+promise.then(function (response) {
+  const uniqueOrderIds = Array.from(new Set(response.documents.map((item) => item.Order_id)));
+  console.log(uniqueOrderIds) 
+  //console.log(response)// Success
+}, function (error) {
+    console.log(error); // Failure
+});
+
+
+
 //import OrderDetails from './OrderDetails';
 
 const orders = [

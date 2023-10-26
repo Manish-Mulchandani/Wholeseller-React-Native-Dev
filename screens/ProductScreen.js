@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, StyleSheet } from 'react-native';
-import axios from 'axios';
+import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, RefreshControl } from 'react-native';
 import { Client, Databases } from 'appwrite';
+import { useNavigation } from '@react-navigation/native';
 
 const DATABASE_ID = '6532eaf0a394c74aeb32'
 const COLLECTION_ID = '6532eafc7e2ef6e5f9fb'
@@ -19,23 +19,13 @@ const ProductScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
+  const [refreshing, setRefreshing] = useState(false)
 
-  // useEffect(() => {
-  //   const fetchProducts = async () => {
-  //     try {
-  //       const response = await axios.get('https://fakestoreapi.com/products');
-  //       setProducts(response.data);
-  //       setFilteredProducts(response.data); // Initialize with all products
-  //     } catch (error) {
-  //       console.error('Error fetching products:', error);
-  //     }
-  //   };
-
-  //   fetchProducts();
-  // }, []);
+  const navigation = useNavigation();
 
   useEffect(() => {
     // Make a request to fetch the products
+    const fetchProducts = () => {
     const promise = databases.listDocuments(DATABASE_ID, COLLECTION_ID);
 
     promise
@@ -46,8 +36,13 @@ const ProductScreen = () => {
       })
       .catch(function (error) {
         console.log(error); // Handle the error appropriately
-      });
-  }, []); // Empty dependency array to run the effect only once
+      })
+      .finally(function () {
+        setRefreshing(false); // Stop refreshing when done
+      })
+    }
+    fetchProducts();
+  }, [refreshing]); // Empty dependency array to run the effect only once
 
   // Function to filter products based on the search text
   useEffect(() => {
@@ -56,6 +51,15 @@ const ProductScreen = () => {
     );
     setFilteredProducts(filtered);
   }, [searchText, products]);
+
+  const handleUpdate = (item) => {
+    navigation.navigate('UpdateProductScreen', {item});
+  }
+
+  const resetSearch = () => {
+    setSearchText('');
+    setRefreshing(true); // Start refreshing
+  };
 
   return (
     <View style={styles.container}>
@@ -67,6 +71,9 @@ const ProductScreen = () => {
       <FlatList
         data={filteredProducts}
         keyExtractor={(item) => item.$id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={resetSearch} />
+        }
         renderItem={({ item }) => (
           <View style={styles.productItem}>
             <Image source={{ uri: item.Image }} style={styles.productImage} />
@@ -76,7 +83,7 @@ const ProductScreen = () => {
               <Text style={styles.productAvailability}>
               Available: {item.Available ? 'Yes' : 'No'}
             </Text>
-              <Button title="Update" onPress={() => console.log("Update Products")} />
+              <Button title="Update" onPress={() => handleUpdate(item)} />
             </View>
           </View>
         )}

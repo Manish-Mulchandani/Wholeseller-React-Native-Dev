@@ -18,24 +18,18 @@ const databases = new Databases(client);
 
 client.setEndpoint(API_URL).setProject(PROJECT_ID); // Replace with your project ID
 
-// const promise = account.createEmailSession('demo@demo.com', 'demodemo');
 
-// promise.then(
-//   function (response) {
-//     console.log(response); // Success
-//   },
-//   function (error) {
-//     console.log(error); // Failure
-//   },
-// );
+const UpdateProductScreen = ({route}) => {
+  const data = route.params.item
+  console.log(data)
+  //data.Available=false
+  const [name,setName] = useState(data.Name)
+  const [price,setPrice] = useState(data.Price.toString())
+  const [availability, setAvailability] = useState(data.Available)
+  const [image, setImage] = useState(data.Image);
 
-const NewAddProduct = () => {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [availability, setAvailability] = useState(true);
+  const [uri, setUri] = useState(data.Image)
 
-  const [image, setImage] = useState(null);
-  const [uri, setUri] = useState(null);
   const [imageName, setImageName] = useState(null);
   const [ftype, setFtype] = useState(null);
   const [succ, setSucc] = useState(false);
@@ -83,6 +77,7 @@ const NewAddProduct = () => {
       console.error('An error occurred while uploading the file:', error);
     }
   };
+  
 
   const pickImage = () => {
     const options = {
@@ -111,16 +106,16 @@ const NewAddProduct = () => {
     });
   };
 
-  const createProduct = () => {
+  const updateProduct = () => {
     // Implement product creation logic, e.g., send data to an API
     console.log('Product Name:', name);
     console.log('Product Price:', price);
     console.log('Product Availability:', availability);
     console.log('Image URI:', image);
-    Alert.alert('Product Added', 'Producte Added successfully');
+    Alert.alert('Product Updated', 'Producte Updated successfully');
     // You can make an API request to create the product with this data
-    const promise = databases.createDocument(
-      DATABASE_ID,COLLECTION_ID,uuidv4(), {
+    const promise = databases.updateDocument(
+      DATABASE_ID,COLLECTION_ID,data.$id, {
         Name: name,
         Price: price,
         Available: availability,
@@ -152,9 +147,7 @@ const NewAddProduct = () => {
   return (
     <ScrollView>
     <View style={styles.container}>
-      <Text style={styles.heading}>Add Product</Text>
-
-      <Button
+    <Button
         style={styles.button}
         mode="outlined"
         onPress={pickImage}
@@ -173,7 +166,6 @@ const NewAddProduct = () => {
       </Button>
 
       {succ && <Text style={styles.successText}>UPLOADED</Text>}
-
       <TextInput
         style={styles.input}
         placeholder="Product Name"
@@ -200,18 +192,18 @@ const NewAddProduct = () => {
           <RadioButton value={false} />
         </View>
       </RadioButton.Group>
-
       <Button
         style={styles.button}
         mode="contained"
-        onPress={createProduct}
+        onPress={updateProduct}
       >
-        Create Product
+        Update Product
       </Button>
     </View>
     </ScrollView>
-  );
-};
+  )
+
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -260,4 +252,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NewAddProduct;
+export default UpdateProductScreen;

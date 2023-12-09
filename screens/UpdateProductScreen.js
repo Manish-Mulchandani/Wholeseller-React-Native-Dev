@@ -21,7 +21,7 @@ client.setEndpoint(API_URL).setProject(PROJECT_ID); // Replace with your project
 
 const UpdateProductScreen = ({route}) => {
   const data = route.params.item
-  console.log(data)
+  // console.log(data)
   //data.Available=false
   const [name,setName] = useState(data.Name)
   const [price,setPrice] = useState(data.Price.toString())
@@ -95,7 +95,7 @@ const UpdateProductScreen = ({route}) => {
       } else {
         //console.log(response);
         try {
-          console.log(response.assets);
+          // console.log(response.assets);
           setUri(response.assets[0].uri);
           setImageName(response.assets[0].fileName);
           setFtype(response.assets[0].type);
@@ -155,7 +155,7 @@ const UpdateProductScreen = ({route}) => {
         Pick an image from camera roll
       </Button>
 
-      {uri && <Image source={{ uri: uri }} style={styles.image} />}
+      {uri && <Image source={{ uri: uri }} style={styles.image} resizeMode='contain'/>}
 
       <Button
         style={styles.button}

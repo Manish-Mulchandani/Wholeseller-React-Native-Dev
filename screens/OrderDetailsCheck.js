@@ -19,19 +19,19 @@ const databases = new Databases(client);
 
 const OrderDetailsCheck = ({route}) => {
     const { products } = route.params;
-    console.log("hello")
-    console.log(products)
+    // console.log("hello")
+    // console.log(products)
 
     const handleRemoveOrder = async () => {
       const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [Query.equal("Order_id", products[0].Order_id), Query.equal("isDeleted", false)]);
-      console.log("first")
+      // console.log("first")
       for (const document of response.documents) {
 
-        console.log(document)
+        // console.log(document)
       
         await databases.updateDocument(DATABASE_ID,COLLECTION_ID,document.$id,{'isDeleted': true})
       }
-      console.log("second")
+      // console.log("second")
 
     Alert.alert('Order Removed', 'Order Removed successfully');
     }
@@ -47,14 +47,14 @@ const OrderDetailsCheck = ({route}) => {
           <View style={styles.productItem}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: item.Image }}
+                source={{ uri: `${item.Image}&output=webp` }}
                 style={styles.productImage}
-                resizeMode="cover"
+                resizeMode='contain'
               />
             </View>
             <View style={styles.productDetails}>
               <Text style={styles.productName}>{item.Name}</Text>
-              <Text style={styles.productPrice}>Price: ${item.Price}</Text>
+              <Text style={styles.productPrice}>Price: Rs.{item.Price}</Text>
               <Text style={styles.productQuantity}>Quantity: {item.Quantity}</Text>
             </View>
           </View>

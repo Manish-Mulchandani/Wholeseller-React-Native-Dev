@@ -162,7 +162,7 @@ const NewAddProduct = () => {
         Pick an image from camera roll
       </Button>
 
-      {uri && <Image source={{ uri: uri }} style={styles.image} />}
+      {uri && <Image source={{ uri: uri }} style={styles.image} resizeMode='contain'/>}
 
       <Button
         style={styles.button}

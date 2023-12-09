@@ -85,7 +85,7 @@ const OrderScreenCheck = () => {
   const handleProductPress = orderId => {
     const products = getProductsByOrderId(orderId);
 
-    console.log(products);
+    // console.log(products);
     navigation.navigate('OrderDetailsCheck', {products});
   };
 

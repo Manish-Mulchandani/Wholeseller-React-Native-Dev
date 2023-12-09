@@ -1,7 +1,5 @@
 import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
-import OrderScreen from './OrderScreen';
-import OrderDetails from './OrderDetails';
 import OrderScreenCheck from './OrderScreenCheck';
 import OrderDetailsCheck from './OrderDetailsCheck';
 

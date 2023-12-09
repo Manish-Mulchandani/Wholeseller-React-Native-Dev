@@ -76,11 +76,11 @@ const ProductScreen = () => {
         }
         renderItem={({ item }) => (
           <View style={styles.productItem}>
-            <Image source={{ uri: item.Image }} style={styles.productImage} />
+            <Image source={{ uri: `${item.Image}&output=webp` }} style={styles.productImage} resizeMode='contain'/>
             <View style={styles.productInfo}>
               <Text style={styles.productTitle}>{item.Name}</Text>
               <Text style={styles.productQuantity}>Price: Rs.{item.Price}</Text>
-              <Text style={styles.productAvailability}>
+              <Text style={[styles.productAvailability, { color: item.Available ? 'green' : 'red' }]}>
               Available: {item.Available ? 'Yes' : 'No'}
             </Text>
               <Button title="Update" onPress={() => handleUpdate(item)} />
@@ -91,11 +91,6 @@ const ProductScreen = () => {
     </View>
   );
 };
-
-// ... StyleSheet and export
-
-// export default ProductScreen;
-
 
 const styles = StyleSheet.create({
   container: {

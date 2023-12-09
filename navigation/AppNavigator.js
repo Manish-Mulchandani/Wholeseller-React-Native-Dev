@@ -1,9 +1,6 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import AddProductScreen from '../screens/AddProductScreen';
 import OrdersScreen from '../screens/OrdersScreen';
-import ProductScreen from '../screens/ProductScreen';
-import ImageUploadComponent from '../screens/AddImageScreen';
 import NewAddProduct from '../screens/NewAddProduct';
 import AddOrders from '../screens/AddOrders';
 import ProductNavigator from '../screens/ProductNavigator';

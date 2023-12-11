@@ -56,6 +56,9 @@ const OrderDetailsCheck = ({route}) => {
               <Text style={styles.productName}>{item.Name}</Text>
               <Text style={styles.productPrice}>Price: Rs.{item.Price}</Text>
               <Text style={styles.productQuantity}>Quantity: {item.Quantity}</Text>
+              {item.Remark && (
+                <Text style={styles.productRemarks}>Remarks: {item.Remark}</Text>
+              )}
             </View>
           </View>
         )}
@@ -107,6 +110,7 @@ const styles = StyleSheet.create({
     },
     productQuantity: {
       fontSize: 16,
+      fontWeight: 'bold',
     },
     orderButton: {
       backgroundColor: '#007BFF',
@@ -117,6 +121,10 @@ const styles = StyleSheet.create({
     orderButtonText: {
       color: 'white',
       fontSize: 16,
+    },
+    productRemarks: {
+      fontSize: 16,
+      color: '#888', // Set color for remarks
     },
   });
 

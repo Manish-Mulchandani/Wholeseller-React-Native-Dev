@@ -1,8 +1,16 @@
 import React from 'react';
-import { View, Text, FlatList, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
 // import OrderDetails from './OrderDetails';
 import {Client, Databases, Query} from 'appwrite';
-import { Button } from 'react-native-paper';
+import {Button} from 'react-native-paper';
 
 const DATABASE_ID = '6532eaf0a394c74aeb32';
 const COLLECTION_ID = '6533aad5270260d0d839';
@@ -18,114 +26,117 @@ client
 const databases = new Databases(client);
 
 const OrderDetailsCheck = ({route}) => {
-    const { products } = route.params;
-    // console.log("hello")
-    // console.log(products)
+  const {products} = route.params;
+  // console.log("hello")
+  // console.log(products)
 
-    const handleRemoveOrder = async () => {
-      const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [Query.equal("Order_id", products[0].Order_id), Query.equal("isDeleted", false)]);
-      // console.log("first")
-      for (const document of response.documents) {
+  const handleRemoveOrder = async () => {
+    const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
+      Query.equal('Order_id', products[0].Order_id),
+      Query.equal('isDeleted', false),
+      Query.limit(1000),
+    ]);
+    // console.log("first")
+    for (const document of response.documents) {
+      // console.log(document)
 
-        // console.log(document)
-      
-        await databases.updateDocument(DATABASE_ID,COLLECTION_ID,document.$id,{'isDeleted': true})
-      }
-      // console.log("second")
+      await databases.updateDocument(DATABASE_ID, COLLECTION_ID, document.$id, {
+        isDeleted: true,
+      });
+    }
+    // console.log("second")
 
     Alert.alert('Order Removed', 'Order Removed successfully');
-    }
-
+  };
 
   return (
     <View style={styles.container}>
       <Text style={styles.productName}>{products[0].Customer_name}</Text>
       <FlatList
         data={products}
-        keyExtractor={(item) => item.$id}
-        renderItem={({ item }) => (
+        keyExtractor={item => item.$id}
+        renderItem={({item}) => (
           <View style={styles.productItem}>
             <View style={styles.imageContainer}>
               <Image
-                source={{ uri: `${item.Image}&output=webp` }}
+                source={{uri: `${item.Image}&output=webp`}}
                 style={styles.productImage}
-                resizeMode='contain'
+                resizeMode="contain"
               />
             </View>
             <View style={styles.productDetails}>
               <Text style={styles.productName}>{item.Name}</Text>
               <Text style={styles.productPrice}>Price: Rs.{item.Price}</Text>
-              <Text style={styles.productQuantity}>Quantity: {item.Quantity}</Text>
+              <Text style={styles.productQuantity}>
+                Quantity: {item.Quantity}
+              </Text>
               {item.Remark && (
-                <Text style={styles.productRemarks}>Remarks: {item.Remark}</Text>
+                <Text style={styles.productRemarks}>
+                  Remarks: {item.Remark}
+                </Text>
               )}
             </View>
           </View>
         )}
       />
-      <TouchableOpacity
-            onPress={handleRemoveOrder}
-            style={styles.orderButton}>
-            <Text style={styles.orderButtonText}>
-              Remove Order
-            </Text>
-          </TouchableOpacity>
+      <TouchableOpacity onPress={handleRemoveOrder} style={styles.orderButton}>
+        <Text style={styles.orderButtonText}>Remove Order</Text>
+      </TouchableOpacity>
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: '#fff',
-      padding: 20,
-    },
-    productItem: {
-      flexDirection: 'row',
-      borderBottomWidth: 1,
-      borderBottomColor: '#ccc',
-      padding: 10,
-    },
-    imageContainer: {
-      marginRight: 10,
-      width: 80,
-      height: 80,
-    },
-    productImage: {
-      width: '100%',
-      height: '100%',
-      borderRadius: 5,
-    },
-    productDetails: {
-      flex: 1,
-      justifyContent: 'center',
-    },
-    productName: {
-      fontSize: 18,
-      fontWeight: 'bold',
-    },
-    productPrice: {
-      fontSize: 16,
-    },
-    productQuantity: {
-      fontSize: 16,
-      fontWeight: 'bold',
-    },
-    orderButton: {
-      backgroundColor: '#007BFF',
-      padding: 10,
-      marginVertical: 5,
-      borderRadius: 5,
-    },
-    orderButtonText: {
-      color: 'white',
-      fontSize: 16,
-    },
-    productRemarks: {
-      fontSize: 16,
-      color: '#888', // Set color for remarks
-    },
-  });
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 20,
+  },
+  productItem: {
+    flexDirection: 'row',
+    borderBottomWidth: 1,
+    borderBottomColor: '#ccc',
+    padding: 10,
+  },
+  imageContainer: {
+    marginRight: 10,
+    width: 80,
+    height: 80,
+  },
+  productImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 5,
+  },
+  productDetails: {
+    flex: 1,
+    justifyContent: 'center',
+  },
+  productName: {
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  productPrice: {
+    fontSize: 16,
+  },
+  productQuantity: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  orderButton: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    marginVertical: 5,
+    borderRadius: 5,
+  },
+  orderButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  productRemarks: {
+    fontSize: 16,
+    color: '#888', // Set color for remarks
+  },
+});
 
 export default OrderDetailsCheck;

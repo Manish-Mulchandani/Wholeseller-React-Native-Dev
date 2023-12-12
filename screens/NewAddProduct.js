@@ -4,30 +4,19 @@ import {Button, RadioButton, TextInput} from 'react-native-paper';
 import {Account, Client, Databases} from 'appwrite';
 import {launchImageLibrary} from 'react-native-image-picker';
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 const API_URL = 'https://cloud.appwrite.io/v1';
 const PROJECT_ID = '652fa3f6300f32d17993';
 const BUCKET_ID = '652ffbcacdbb0f80832b';
-const DATABASE_ID = '6532eaf0a394c74aeb32'
-const COLLECTION_ID = '6532eafc7e2ef6e5f9fb'
+const DATABASE_ID = '6532eaf0a394c74aeb32';
+const COLLECTION_ID = '6532eafc7e2ef6e5f9fb';
 
 const client = new Client();
 const account = new Account(client);
 const databases = new Databases(client);
 
 client.setEndpoint(API_URL).setProject(PROJECT_ID); // Replace with your project ID
-
-// const promise = account.createEmailSession('demo@demo.com', 'demodemo');
-
-// promise.then(
-//   function (response) {
-//     console.log(response); // Success
-//   },
-//   function (error) {
-//     console.log(error); // Failure
-//   },
-// );
 
 const NewAddProduct = () => {
   const [name, setName] = useState('');
@@ -120,14 +109,17 @@ const NewAddProduct = () => {
     Alert.alert('Product Added', 'Producte Added successfully');
     // You can make an API request to create the product with this data
     const promise = databases.createDocument(
-      DATABASE_ID,COLLECTION_ID,uuidv4(), {
+      DATABASE_ID,
+      COLLECTION_ID,
+      uuidv4(),
+      {
         Name: name,
         Price: price,
         Available: availability,
-        Image: image
-      }
+        Image: image,
+      },
     );
-    console.log("second")
+    console.log('second');
 
     promise.then(
       function (response) {
@@ -137,7 +129,7 @@ const NewAddProduct = () => {
         console.log(error); // Failure
       },
     );
-    
+
     setName(null);
     setPrice(null);
     setAvailability(true);
@@ -151,64 +143,60 @@ const NewAddProduct = () => {
 
   return (
     <ScrollView>
-    <View style={styles.container}>
-      <Text style={styles.heading}>Add Product</Text>
+      <View style={styles.container}>
+        <Text style={styles.heading}>Add Product</Text>
 
-      <Button
-        style={styles.button}
-        mode="outlined"
-        onPress={pickImage}
-      >
-        Pick an image from camera roll
-      </Button>
+        <Button style={styles.button} mode="outlined" onPress={pickImage}>
+          Pick an image from camera roll
+        </Button>
 
-      {uri && <Image source={{ uri: uri }} style={styles.image} resizeMode='contain'/>}
+        {uri && (
+          <Image
+            source={{uri: uri}}
+            style={styles.image}
+            resizeMode="contain"
+          />
+        )}
 
-      <Button
-        style={styles.button}
-        mode="contained"
-        onPress={uploadImage}
-      >
-        Upload Image
-      </Button>
+        <Button style={styles.button} mode="contained" onPress={uploadImage}>
+          Upload Image
+        </Button>
 
-      {succ && <Text style={styles.successText}>UPLOADED</Text>}
+        {succ && <Text style={styles.successText}>UPLOADED</Text>}
 
-      <TextInput
-        style={styles.input}
-        placeholder="Product Name"
-        value={name}
-        onChangeText={text => setName(text)}
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Product Name"
+          value={name}
+          onChangeText={text => setName(text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Product Price"
-        value={price}
-        onChangeText={text => setPrice(text)}
-        keyboardType="numeric"
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Product Price"
+          value={price}
+          onChangeText={text => setPrice(text)}
+          keyboardType="numeric"
+        />
 
-      <Text style={styles.label}>Availability:</Text>
-      <RadioButton.Group onValueChange={value => setAvailability(value)} value={availability}>
-        <View style={styles.radioButtonContainer}>
-          <Text>Yes</Text>
-          <RadioButton value={true} />
-        </View>
-        <View style={styles.radioButtonContainer}>
-          <Text>No</Text>
-          <RadioButton value={false} />
-        </View>
-      </RadioButton.Group>
+        <Text style={styles.label}>Availability:</Text>
+        <RadioButton.Group
+          onValueChange={value => setAvailability(value)}
+          value={availability}>
+          <View style={styles.radioButtonContainer}>
+            <Text>Yes</Text>
+            <RadioButton value={true} />
+          </View>
+          <View style={styles.radioButtonContainer}>
+            <Text>No</Text>
+            <RadioButton value={false} />
+          </View>
+        </RadioButton.Group>
 
-      <Button
-        style={styles.button}
-        mode="contained"
-        onPress={createProduct}
-      >
-        Create Product
-      </Button>
-    </View>
+        <Button style={styles.button} mode="contained" onPress={createProduct}>
+          Create Product
+        </Button>
+      </View>
     </ScrollView>
   );
 };

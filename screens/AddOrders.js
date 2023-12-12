@@ -21,34 +21,38 @@ const UpdateCustomerNameScreen = ({route, navigation}) => {
   const handleUpdate = () => {
     const query = `{"Order_id":"${orderId}"}`;
 
-    databases.listDocuments(DATABASE_ID, COLLECTION_ID, [Query.equal("Order_id", orderId)]).then(
-      async response => {
-        const documents = response.documents;
-        console.log(documents)
-        // Step 2: Update each matching document with the provided Customer_name
-        const updatePromises = documents.map(async document => {
-          const updatedDocument = {
-            Customer_name: customerName,
-          };
+    databases
+      .listDocuments(DATABASE_ID, COLLECTION_ID, [
+        Query.equal('Order_id', orderId),
+      ])
+      .then(
+        async response => {
+          const documents = response.documents;
+          console.log(documents);
+          // Step 2: Update each matching document with the provided Customer_name
+          const updatePromises = documents.map(async document => {
+            const updatedDocument = {
+              Customer_name: customerName,
+            };
 
-          return databases.updateDocument(
-            DATABASE_ID,
-            COLLECTION_ID,
-            document.$id,
-            updatedDocument,
-          );
-        });
+            return databases.updateDocument(
+              DATABASE_ID,
+              COLLECTION_ID,
+              document.$id,
+              updatedDocument,
+            );
+          });
 
-        // Step 3: Wait for all update promises to resolve
-        await Promise.all(updatePromises);
+          // Step 3: Wait for all update promises to resolve
+          await Promise.all(updatePromises);
 
-    Alert.alert('Order Added', 'Order Added successfully');
-        console.log('All matching documents updated successfully');
-      },
-      error => {
-        console.error('Error listing documents:', error);
-      },
-    );
+          Alert.alert('Order Added', 'Order Added successfully');
+          console.log('All matching documents updated successfully');
+        },
+        error => {
+          console.error('Error listing documents:', error);
+        },
+      );
   };
 
   return (

@@ -4,13 +4,13 @@ import {Button, RadioButton, TextInput} from 'react-native-paper';
 import {Account, Client, Databases} from 'appwrite';
 import {launchImageLibrary} from 'react-native-image-picker';
 import 'react-native-get-random-values';
-import { v4 as uuidv4 } from 'uuid';
+import {v4 as uuidv4} from 'uuid';
 
 const API_URL = 'https://cloud.appwrite.io/v1';
 const PROJECT_ID = '652fa3f6300f32d17993';
 const BUCKET_ID = '652ffbcacdbb0f80832b';
-const DATABASE_ID = '6532eaf0a394c74aeb32'
-const COLLECTION_ID = '6532eafc7e2ef6e5f9fb'
+const DATABASE_ID = '6532eaf0a394c74aeb32';
+const COLLECTION_ID = '6532eafc7e2ef6e5f9fb';
 
 const client = new Client();
 const account = new Account(client);
@@ -18,17 +18,16 @@ const databases = new Databases(client);
 
 client.setEndpoint(API_URL).setProject(PROJECT_ID); // Replace with your project ID
 
-
 const UpdateProductScreen = ({route}) => {
-  const data = route.params.item
+  const data = route.params.item;
   // console.log(data)
   //data.Available=false
-  const [name,setName] = useState(data.Name)
-  const [price,setPrice] = useState(data.Price.toString())
-  const [availability, setAvailability] = useState(data.Available)
+  const [name, setName] = useState(data.Name);
+  const [price, setPrice] = useState(data.Price.toString());
+  const [availability, setAvailability] = useState(data.Available);
   const [image, setImage] = useState(data.Image);
 
-  const [uri, setUri] = useState(data.Image)
+  const [uri, setUri] = useState(data.Image);
 
   const [imageName, setImageName] = useState(null);
   const [ftype, setFtype] = useState(null);
@@ -77,7 +76,6 @@ const UpdateProductScreen = ({route}) => {
       console.error('An error occurred while uploading the file:', error);
     }
   };
-  
 
   const pickImage = () => {
     const options = {
@@ -115,14 +113,17 @@ const UpdateProductScreen = ({route}) => {
     Alert.alert('Product Updated', 'Producte Updated successfully');
     // You can make an API request to create the product with this data
     const promise = databases.updateDocument(
-      DATABASE_ID,COLLECTION_ID,data.$id, {
+      DATABASE_ID,
+      COLLECTION_ID,
+      data.$id,
+      {
         Name: name,
         Price: price,
         Available: availability,
-        Image: image
-      }
+        Image: image,
+      },
     );
-    console.log("second")
+    console.log('second');
 
     promise.then(
       function (response) {
@@ -132,7 +133,7 @@ const UpdateProductScreen = ({route}) => {
         console.log(error); // Failure
       },
     );
-    
+
     setName(null);
     setPrice(null);
     setAvailability(true);
@@ -146,64 +147,59 @@ const UpdateProductScreen = ({route}) => {
 
   return (
     <ScrollView>
-    <View style={styles.container}>
-    <Button
-        style={styles.button}
-        mode="outlined"
-        onPress={pickImage}
-      >
-        Pick an image from camera roll
-      </Button>
+      <View style={styles.container}>
+        <Button style={styles.button} mode="outlined" onPress={pickImage}>
+          Pick an image from camera roll
+        </Button>
 
-      {uri && <Image source={{ uri: uri }} style={styles.image} resizeMode='contain'/>}
+        {uri && (
+          <Image
+            source={{uri: uri}}
+            style={styles.image}
+            resizeMode="contain"
+          />
+        )}
 
-      <Button
-        style={styles.button}
-        mode="contained"
-        onPress={uploadImage}
-      >
-        Upload Image
-      </Button>
+        <Button style={styles.button} mode="contained" onPress={uploadImage}>
+          Upload Image
+        </Button>
 
-      {succ && <Text style={styles.successText}>UPLOADED</Text>}
-      <TextInput
-        style={styles.input}
-        placeholder="Product Name"
-        value={name}
-        onChangeText={text => setName(text)}
-      />
+        {succ && <Text style={styles.successText}>UPLOADED</Text>}
+        <TextInput
+          style={styles.input}
+          placeholder="Product Name"
+          value={name}
+          onChangeText={text => setName(text)}
+        />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Product Price"
-        value={price}
-        onChangeText={text => setPrice(text)}
-        keyboardType="numeric"
-      />
+        <TextInput
+          style={styles.input}
+          placeholder="Product Price"
+          value={price}
+          onChangeText={text => setPrice(text)}
+          keyboardType="numeric"
+        />
 
-      <Text style={styles.label}>Availability:</Text>
-      <RadioButton.Group onValueChange={value => setAvailability(value)} value={availability}>
-        <View style={styles.radioButtonContainer}>
-          <Text>Yes</Text>
-          <RadioButton value={true} />
-        </View>
-        <View style={styles.radioButtonContainer}>
-          <Text>No</Text>
-          <RadioButton value={false} />
-        </View>
-      </RadioButton.Group>
-      <Button
-        style={styles.button}
-        mode="contained"
-        onPress={updateProduct}
-      >
-        Update Product
-      </Button>
-    </View>
+        <Text style={styles.label}>Availability:</Text>
+        <RadioButton.Group
+          onValueChange={value => setAvailability(value)}
+          value={availability}>
+          <View style={styles.radioButtonContainer}>
+            <Text>Yes</Text>
+            <RadioButton value={true} />
+          </View>
+          <View style={styles.radioButtonContainer}>
+            <Text>No</Text>
+            <RadioButton value={false} />
+          </View>
+        </RadioButton.Group>
+        <Button style={styles.button} mode="contained" onPress={updateProduct}>
+          Update Product
+        </Button>
+      </View>
     </ScrollView>
-  )
-
-}
+  );
+};
 
 const styles = StyleSheet.create({
   container: {

@@ -1,11 +1,20 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, Button, FlatList, Image, StyleSheet, RefreshControl } from 'react-native';
-import { Client, Databases } from 'appwrite';
-import { useNavigation } from '@react-navigation/native';
+import React, {useState, useEffect} from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  Button,
+  FlatList,
+  Image,
+  StyleSheet,
+  RefreshControl,
+} from 'react-native';
+import {Client, Databases, Query} from 'appwrite';
+import {useNavigation} from '@react-navigation/native';
 
-const DATABASE_ID = '6532eaf0a394c74aeb32'
-const COLLECTION_ID = '6532eafc7e2ef6e5f9fb'
-const PROJECT_ID = '652fa3f6300f32d17993'
+const DATABASE_ID = '6532eaf0a394c74aeb32';
+const COLLECTION_ID = '6532eafc7e2ef6e5f9fb';
+const PROJECT_ID = '652fa3f6300f32d17993';
 
 const client = new Client();
 
@@ -13,48 +22,50 @@ client
   .setEndpoint('https://cloud.appwrite.io/v1') // Your API Endpoint
   .setProject(PROJECT_ID); // Your project ID
 
-  const databases = new Databases(client);
+const databases = new Databases(client);
 
 const ProductScreen = () => {
   const [searchText, setSearchText] = useState('');
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
-  const [refreshing, setRefreshing] = useState(false)
+  const [refreshing, setRefreshing] = useState(false);
 
   const navigation = useNavigation();
 
   useEffect(() => {
     // Make a request to fetch the products
     const fetchProducts = () => {
-    const promise = databases.listDocuments(DATABASE_ID, COLLECTION_ID);
+      const promise = databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
+        Query.limit(1000),
+      ]);
 
-    promise
-      .then(function (response) {
-        if (response && response.documents) {
-          setProducts(response.documents);
-        }
-      })
-      .catch(function (error) {
-        console.log(error); // Handle the error appropriately
-      })
-      .finally(function () {
-        setRefreshing(false); // Stop refreshing when done
-      })
-    }
+      promise
+        .then(function (response) {
+          if (response && response.documents) {
+            setProducts(response.documents);
+          }
+        })
+        .catch(function (error) {
+          console.log(error); // Handle the error appropriately
+        })
+        .finally(function () {
+          setRefreshing(false); // Stop refreshing when done
+        });
+    };
     fetchProducts();
   }, [refreshing]); // Empty dependency array to run the effect only once
 
   // Function to filter products based on the search text
   useEffect(() => {
-    const filtered = products.filter((product) =>
-      product.Name.toLowerCase().includes(searchText.toLowerCase())
+    const filtered = products.filter(product =>
+      product.Name.toLowerCase().includes(searchText.toLowerCase()),
     );
     setFilteredProducts(filtered);
   }, [searchText, products]);
 
-  const handleUpdate = (item) => {
+  const handleUpdate = item => {
     navigation.navigate('UpdateProductScreen', {item});
-  }
+  };
 
   const resetSearch = () => {
     setSearchText('');
@@ -65,24 +76,32 @@ const ProductScreen = () => {
     <View style={styles.container}>
       <TextInput
         placeholder="Search products..."
-        onChangeText={(text) => setSearchText(text)}
+        onChangeText={text => setSearchText(text)}
         style={styles.searchInput}
       />
       <FlatList
         data={filteredProducts}
-        keyExtractor={(item) => item.$id}
+        keyExtractor={item => item.$id}
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={resetSearch} />
         }
-        renderItem={({ item }) => (
+        renderItem={({item}) => (
           <View style={styles.productItem}>
-            <Image source={{ uri: `${item.Image}&output=webp` }} style={styles.productImage} resizeMode='contain'/>
+            <Image
+              source={{uri: `${item.Image}&output=webp`}}
+              style={styles.productImage}
+              resizeMode="contain"
+            />
             <View style={styles.productInfo}>
               <Text style={styles.productTitle}>{item.Name}</Text>
               <Text style={styles.productQuantity}>Price: Rs.{item.Price}</Text>
-              <Text style={[styles.productAvailability, { color: item.Available ? 'green' : 'red' }]}>
-              Available: {item.Available ? 'Yes' : 'No'}
-            </Text>
+              <Text
+                style={[
+                  styles.productAvailability,
+                  {color: item.Available ? 'green' : 'red'},
+                ]}>
+                Available: {item.Available ? 'Yes' : 'No'}
+              </Text>
               <Button title="Update" onPress={() => handleUpdate(item)} />
             </View>
           </View>

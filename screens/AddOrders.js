@@ -1,6 +1,6 @@
-import React, {useState} from 'react';
-import {View, TextInput, Button, Alert} from 'react-native';
-import {Client, Databases, Query} from 'appwrite';
+import React, { useState } from 'react';
+import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { Client, Databases, Query } from 'appwrite';
 
 const DATABASE_ID = '6532eaf0a394c74aeb32';
 const COLLECTION_ID = '6533aad5270260d0d839';
@@ -14,22 +14,19 @@ client
 
 const databases = new Databases(client);
 
-const UpdateCustomerNameScreen = ({route, navigation}) => {
-  const [orderId, setOrderId] = useState('');
+const UpdateCustomerNameScreen = ({ route, navigation }) => {
+  const [phoneNumber, setPhoneNumber] = useState('');
   const [customerName, setCustomerName] = useState('');
 
   const handleUpdate = () => {
-    const query = `{"Order_id":"${orderId}"}`;
-
     databases
       .listDocuments(DATABASE_ID, COLLECTION_ID, [
-        Query.equal('Order_id', orderId),
+        Query.equal('Phone_Number', phoneNumber),
+        Query.equal('isDeleted', false),
       ])
       .then(
         async response => {
           const documents = response.documents;
-          console.log(documents);
-          // Step 2: Update each matching document with the provided Customer_name
           const updatePromises = documents.map(async document => {
             const updatedDocument = {
               Customer_name: customerName,
@@ -43,7 +40,6 @@ const UpdateCustomerNameScreen = ({route, navigation}) => {
             );
           });
 
-          // Step 3: Wait for all update promises to resolve
           await Promise.all(updatePromises);
 
           Alert.alert('Order Added', 'Order Added successfully');
@@ -56,13 +52,15 @@ const UpdateCustomerNameScreen = ({route, navigation}) => {
   };
 
   return (
-    <View>
+    <View style={styles.container}>
       <TextInput
-        placeholder="Order ID"
-        onChangeText={setOrderId}
-        value={orderId}
+        style={styles.input}
+        placeholder="Customer Phone Number"
+        onChangeText={setPhoneNumber}
+        value={phoneNumber}
       />
       <TextInput
+        style={styles.input}
         placeholder="Customer Name"
         onChangeText={setCustomerName}
         value={customerName}
@@ -71,5 +69,22 @@ const UpdateCustomerNameScreen = ({route, navigation}) => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  input: {
+    height: 40,
+    borderColor: 'gray',
+    borderWidth: 1,
+    marginBottom: 20,
+    padding: 10,
+    width: '100%',
+  },
+});
 
 export default UpdateCustomerNameScreen;

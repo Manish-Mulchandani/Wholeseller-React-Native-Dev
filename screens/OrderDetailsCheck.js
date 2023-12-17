@@ -51,7 +51,7 @@ const OrderDetailsCheck = ({route}) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.productName}>{products[0].Customer_name}</Text>
+      <Text style={styles.productName}>{products[0].Customer_name || products[0].Phone_Number}</Text>
       <FlatList
         data={products}
         keyExtractor={item => item.$id}

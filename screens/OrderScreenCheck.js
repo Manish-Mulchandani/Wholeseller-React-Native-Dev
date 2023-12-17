@@ -38,7 +38,7 @@ const OrderScreenCheck = () => {
 
   const fetchData = () => {
     const promise = databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
-      Query.isNotNull('Customer_name'),
+      // Query.isNotNull('Phone_Number'),
       Query.equal('isDeleted', false),
       Query.limit(1000),
     ]);
@@ -70,22 +70,6 @@ const OrderScreenCheck = () => {
     return data.documents.filter(item => item.Order_id === orderId);
   };
 
-  //   return (
-  //     <FlatList
-  //       data={orderIds}
-  //       keyExtractor={orderId => orderId}
-  //       renderItem={({item}) => (
-  //         <TouchableOpacity
-  //           onPress={() => handleProductPress(item)}
-  //           style={styles.orderButton}>
-  //           <Text style={styles.orderButtonText}>
-  //             {getProductsByOrderId(item)[0].Customer_name}
-  //           </Text>
-  //         </TouchableOpacity>
-  //       )}
-  //     />
-  //   );
-  // };
 
   const handleProductPress = orderId => {
     const products = getProductsByOrderId(orderId);
@@ -96,7 +80,7 @@ const OrderScreenCheck = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Select an Order ID:</Text>
+      <Text style={styles.header}>Select an Order:</Text>
       <FlatList
         refreshControl={
           // Add a refresh control to the FlatList
@@ -109,7 +93,7 @@ const OrderScreenCheck = () => {
         keyExtractor={orderId => orderId}
         renderItem={({item}) => {
           const document = getProductsByOrderId(item)[0];
-          const customerName = document ? document.Customer_name : 'Unknown';
+          const customerName = document ? (document.Customer_name || document.Phone_Number || document.Order_id || 'Unknown') : 'Unknown';
           return (
             <TouchableOpacity
               onPress={() => handleProductPress(item)}

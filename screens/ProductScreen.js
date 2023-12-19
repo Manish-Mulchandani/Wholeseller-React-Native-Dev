@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
   },
   productQuantity: {
     fontSize: 14,
-    color: 'gray',
+    fontWeight: 'bold',
   },
   productAvailability: {
     fontSize: 14,

@@ -19,6 +19,7 @@ const UpdateCustomerNameScreen = ({ route, navigation }) => {
   const [customerName, setCustomerName] = useState('');
 
   const handleUpdate = () => {
+    if(phoneNumber && customerName) {
     databases
       .listDocuments(DATABASE_ID, COLLECTION_ID, [
         Query.equal('Phone_Number', phoneNumber),
@@ -47,9 +48,13 @@ const UpdateCustomerNameScreen = ({ route, navigation }) => {
         },
         error => {
           console.error('Error listing documents:', error);
+          Alert.alert('Order Not Added', 'Write correct phone number and customer name');
         },
       );
-  };
+  }
+else{
+  Alert.alert('Order Not Added', 'Write correct phone number and customer name');
+}};
 
   return (
     <View style={styles.container}>
@@ -58,6 +63,7 @@ const UpdateCustomerNameScreen = ({ route, navigation }) => {
         placeholder="Customer Phone Number"
         onChangeText={setPhoneNumber}
         value={phoneNumber}
+        keyboardType="numeric"
       />
       <TextInput
         style={styles.input}

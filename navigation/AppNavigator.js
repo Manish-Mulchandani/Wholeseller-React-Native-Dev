@@ -28,11 +28,11 @@ const AppNavigator = () => {
         component={OrdersScreen}
         options={{headerShown: false}}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="Add Orders"
         component={AddOrders}
         options={{headerShown: false}}
-      />
+      /> */}
       <Tab.Screen name="Create Cart" options={{headerShown: false}}>
         {() => <CreateCart cart={cart} setCart={setCart} />}
       </Tab.Screen>

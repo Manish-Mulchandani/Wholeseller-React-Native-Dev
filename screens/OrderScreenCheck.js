@@ -70,6 +70,9 @@ const OrderScreenCheck = () => {
     return data.documents.filter(item => item.Order_id === orderId);
   };
 
+  const addingOrders = () => {
+    navigation.navigate('AddOrders');
+  };
 
   const handleProductPress = orderId => {
     const products = getProductsByOrderId(orderId);
@@ -80,6 +83,9 @@ const OrderScreenCheck = () => {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity onPress={addingOrders} style={styles.addorderButton}>
+        <Text style={styles.addorderButtonText}>Add Orders</Text>
+      </TouchableOpacity>
       <Text style={styles.header}>Select an Order:</Text>
       <FlatList
         refreshControl={
@@ -93,7 +99,12 @@ const OrderScreenCheck = () => {
         keyExtractor={orderId => orderId}
         renderItem={({item}) => {
           const document = getProductsByOrderId(item)[0];
-          const customerName = document ? (document.Customer_name || document.Phone_Number || document.Order_id || 'Unknown') : 'Unknown';
+          const customerName = document
+            ? document.Customer_name ||
+              document.Phone_Number ||
+              document.Order_id ||
+              'Unknown'
+            : 'Unknown';
           return (
             <TouchableOpacity
               onPress={() => handleProductPress(item)}
@@ -127,6 +138,19 @@ const styles = StyleSheet.create({
   orderButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  addorderButton: {
+    backgroundColor: '#007BFF',
+    padding: 10,
+    borderRadius: 8,
+    alignItems: 'center',
+    marginTop: 0,
+    marginBottom: 10
+  },
+  addorderButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 18,
   },
 });
 

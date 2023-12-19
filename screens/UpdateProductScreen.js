@@ -59,21 +59,24 @@ const UpdateProductScreen = ({route}) => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log('File uploaded successfully:', data);
-        console.log(data.$id);
+        // console.log('File uploaded successfully:', data);
+        // console.log(data.$id);
         setImage(
           `${API_URL}/storage/buckets/${BUCKET_ID}/files/${data.$id}/view?project=${PROJECT_ID}`,
         );
         //https://cloud.appwrite.io/v1/storage/buckets/652ffbcacdbb0f80832b/files/6532c63cea7b54cdeac6/view?project=652fa3f6300f32d17993
         //setImage(data.$id)
         setSucc(true);
+        Alert.alert('Image Uploaded', 'Image Uploaded successfully');
       } else {
-        console.error('File upload failed. Status:', response.status);
+        // console.error('File upload failed. Status:', response.status);
         const errorData = await response.json();
-        console.error('Error Details:', errorData);
+        Alert.alert('Image not Uploaded', 'Image not uploaded successfully');
+        // console.error('Error Details:', errorData);
       }
     } catch (error) {
-      console.error('An error occurred while uploading the file:', error);
+      // console.error('An error occurred while uploading the file:', error);
+      Alert.alert('Image not Uploaded', 'Image not uploaded successfully');
     }
   };
 
@@ -106,11 +109,11 @@ const UpdateProductScreen = ({route}) => {
 
   const updateProduct = () => {
     // Implement product creation logic, e.g., send data to an API
-    console.log('Product Name:', name);
-    console.log('Product Price:', price);
-    console.log('Product Availability:', availability);
-    console.log('Image URI:', image);
-    Alert.alert('Product Updated', 'Producte Updated successfully');
+    // console.log('Product Name:', name);
+    // console.log('Product Price:', price);
+    // console.log('Product Availability:', availability);
+    // console.log('Image URI:', image);
+    
     // You can make an API request to create the product with this data
     const promise = databases.updateDocument(
       DATABASE_ID,
@@ -123,14 +126,16 @@ const UpdateProductScreen = ({route}) => {
         Image: image,
       },
     );
-    console.log('second');
+    // console.log('second');
 
     promise.then(
       function (response) {
-        console.log(response); // Success
+        Alert.alert('Product Updated', 'Producte Updated successfully');
+        // console.log(response); // Success
       },
       function (error) {
-        console.log(error); // Failure
+        Alert.alert('Product Not Updated', 'Producte did not update');
+        // console.log(error); // Failure
       },
     );
 
@@ -165,6 +170,8 @@ const UpdateProductScreen = ({route}) => {
         </Button>
 
         {succ && <Text style={styles.successText}>UPLOADED</Text>}
+
+        {/* {(image||succ) ? <Text style={styles.successText}>UPLOADED</Text> : <Text style={styles.failText}>NOT UPLOADED</Text>} */}
         <TextInput
           style={styles.input}
           placeholder="Product Name"
@@ -227,6 +234,13 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 16,
     color: 'green',
+    textAlign: 'center',
+  },
+  failText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: 'red',
     textAlign: 'center',
   },
   input: {

@@ -19,8 +19,8 @@ const databases = new Databases(client);
 client.setEndpoint(API_URL).setProject(PROJECT_ID); // Replace with your project ID
 
 const NewAddProduct = () => {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
+  const [name, setName] = useState(null);
+  const [price, setPrice] = useState(null);
   const [availability, setAvailability] = useState(true);
 
   const [image, setImage] = useState(null);
@@ -30,46 +30,54 @@ const NewAddProduct = () => {
   const [succ, setSucc] = useState(false);
 
   const uploadImage = async () => {
-    const fileId = 'unique()';
-    const type = ftype ? ftype : match ? `image/${match[1]}` : `image`;
-    const formData = new FormData();
-    formData.append('fileId', fileId);
-    formData.append('file', {
-      uri: uri,
-      name: imageName,
-      type,
-    });
-    try {
-      const response = await fetch(
-        `${API_URL}/storage/buckets/${BUCKET_ID}/files/`,
-        {
-          method: 'POST',
-          headers: {
-            'X-Appwrite-Project': PROJECT_ID,
-            'x-sdk-version': 'appwrite:web:10.2.0',
+    if (uri) {
+      const fileId = 'unique()';
+      const type = ftype ? ftype : match ? `image/${match[1]}` : `image`;
+      const formData = new FormData();
+      formData.append('fileId', fileId);
+      formData.append('file', {
+        uri: uri,
+        name: imageName,
+        type,
+      });
+      try {
+        const response = await fetch(
+          `${API_URL}/storage/buckets/${BUCKET_ID}/files/`,
+          {
+            method: 'POST',
+            headers: {
+              'X-Appwrite-Project': PROJECT_ID,
+              'x-sdk-version': 'appwrite:web:10.2.0',
+            },
+            body: formData,
+            credentials: 'include',
           },
-          body: formData,
-          credentials: 'include',
-        },
-      );
-
-      if (response.ok) {
-        const data = await response.json();
-        console.log('File uploaded successfully:', data);
-        console.log(data.$id);
-        setImage(
-          `${API_URL}/storage/buckets/${BUCKET_ID}/files/${data.$id}/view?project=${PROJECT_ID}`,
         );
-        //https://cloud.appwrite.io/v1/storage/buckets/652ffbcacdbb0f80832b/files/6532c63cea7b54cdeac6/view?project=652fa3f6300f32d17993
-        //setImage(data.$id)
-        setSucc(true);
-      } else {
-        console.error('File upload failed. Status:', response.status);
-        const errorData = await response.json();
-        console.error('Error Details:', errorData);
+
+        if (response.ok) {
+          const data = await response.json();
+          // console.log('File uploaded successfully:', data);
+          // console.log(data.$id);
+          setImage(
+            `${API_URL}/storage/buckets/${BUCKET_ID}/files/${data.$id}/view?project=${PROJECT_ID}`,
+          );
+          //https://cloud.appwrite.io/v1/storage/buckets/652ffbcacdbb0f80832b/files/6532c63cea7b54cdeac6/view?project=652fa3f6300f32d17993
+          //setImage(data.$id)
+          setSucc(true);
+          Alert.alert('Image Uploaded', 'Image uploaded successfully');
+        } else {
+          // console.error('File upload failed. Status:', response.status);
+          const errorData = await response.json();
+          // console.error('Error Details:', errorData);
+          Alert.alert('Image Not Uploaded', 'Image not uploaded');
+        }
+      } catch (error) {
+        // console.error('An error occurred while uploading the file:', error);
+        Alert.alert('Image Not Uploaded', 'Image not uploaded');
       }
-    } catch (error) {
-      console.error('An error occurred while uploading the file:', error);
+    }
+    else{
+      Alert.alert('Image Not Choosen', 'Choose Image first');
     }
   };
 
@@ -102,43 +110,49 @@ const NewAddProduct = () => {
 
   const createProduct = () => {
     // Implement product creation logic, e.g., send data to an API
-    console.log('Product Name:', name);
-    console.log('Product Price:', price);
-    console.log('Product Availability:', availability);
-    console.log('Image URI:', image);
-    Alert.alert('Product Added', 'Producte Added successfully');
+    // console.log('Product Name:', name);
+    // console.log('Product Price:', price);
+    // console.log('Product Availability:', availability);
+    // console.log('Image URI:', image);
+    // Alert.alert('Product Added', 'Producte Added successfully');
     // You can make an API request to create the product with this data
-    const promise = databases.createDocument(
-      DATABASE_ID,
-      COLLECTION_ID,
-      uuidv4(),
-      {
-        Name: name,
-        Price: price,
-        Available: availability,
-        Image: image,
-      },
-    );
-    console.log('second');
+    if (name && price) {
+      const promise = databases.createDocument(
+        DATABASE_ID,
+        COLLECTION_ID,
+        uuidv4(),
+        {
+          Name: name,
+          Price: price,
+          Available: availability,
+          Image: image,
+        },
+      );
+      console.log('second');
 
-    promise.then(
-      function (response) {
-        console.log(response); // Success
-      },
-      function (error) {
-        console.log(error); // Failure
-      },
-    );
+      promise.then(
+        function (response) {
+          console.log(response); // Success
+          Alert.alert('Product Created', 'Product created Successfully');
+        },
+        function (error) {
+          console.log(error); // Failure
+          Alert.alert('Product Not Created', 'Product creation unsuccessful');
+        },
+      );
 
-    setName(null);
-    setPrice(null);
-    setAvailability(true);
+      setName(null);
+      setPrice(null);
+      setAvailability(true);
 
-    setImage(null);
-    setUri(null);
-    setImageName(null);
-    setFtype(null);
-    setSucc(null);
+      setImage(null);
+      setUri(null);
+      setImageName(null);
+      setFtype(null);
+      setSucc(null);
+    } else {
+      Alert.alert('Product Not Created', 'Product creation unsuccessful');
+    }
   };
 
   return (

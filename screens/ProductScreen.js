@@ -46,7 +46,7 @@ const ProductScreen = () => {
       promise
         .then(function (response) {
           if (response && response.documents) {
-            setProducts(response.documents);
+            setProducts(response.documents.reverse());
           }
         })
         .catch(function (error) {

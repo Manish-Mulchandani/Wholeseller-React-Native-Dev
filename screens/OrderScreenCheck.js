@@ -7,6 +7,7 @@ import {
   StyleSheet,
   ScrollView,
   RefreshControl,
+  useColorScheme,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Client, Databases, Query} from 'appwrite';
@@ -28,6 +29,8 @@ const OrderScreenCheck = () => {
   //const [selectedOrderId, setSelectedOrderId] = useState(null);
   const [data, setData] = useState(null);
   const [refreshing, setRefreshing] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
   // const [refresh,setRefresh] = useState(false);
 
   const navigation = useNavigation();
@@ -82,22 +85,31 @@ const OrderScreenCheck = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? '#121212' : '#f0f0f0' },
+      ]}
+    >
       <TouchableOpacity onPress={addingOrders} style={styles.addorderButton}>
-        <Text style={styles.addorderButtonText}>Add Orders</Text>
+        <Text style={[styles.addorderButtonText, { fontWeight: 'bold' }]}>
+          Add Orders
+        </Text>
       </TouchableOpacity>
-      <Text style={styles.header}>Select an Order:</Text>
+      <Text style={[styles.header, { color: isDarkMode ? '#fff' : '#000' }]}>
+        Select an Order:
+      </Text>
       <FlatList
         refreshControl={
-          // Add a refresh control to the FlatList
           <RefreshControl
-            refreshing={refreshing} // Set the refreshing state
-            onRefresh={onRefresh} // Handle refresh action
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            colors={['#007BFF']} // Customize the loading indicator color
           />
         }
         data={orderIds}
         keyExtractor={orderId => orderId}
-        renderItem={({item}) => {
+        renderItem={({ item }) => {
           const document = getProductsByOrderId(item)[0];
           const customerName = document
             ? document.Customer_name ||
@@ -108,8 +120,11 @@ const OrderScreenCheck = () => {
           return (
             <TouchableOpacity
               onPress={() => handleProductPress(item)}
-              style={styles.orderButton}>
-              <Text style={styles.orderButtonText}>{customerName}</Text>
+              style={styles.orderButton}
+            >
+              <Text style={[styles.orderButtonText, { color: '#fff' }]}>
+                {customerName}
+              </Text>
             </TouchableOpacity>
           );
         }}

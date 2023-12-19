@@ -1,4 +1,4 @@
-import {View, Text, StyleSheet, Image, ScrollView, Alert} from 'react-native';
+import {View, Text, StyleSheet, Image, ScrollView, Alert, useColorScheme} from 'react-native';
 import React, {useState} from 'react';
 import {Button, RadioButton, TextInput} from 'react-native-paper';
 import {Account, Client, Databases} from 'appwrite';
@@ -32,6 +32,10 @@ const UpdateProductScreen = ({route}) => {
   const [imageName, setImageName] = useState(null);
   const [ftype, setFtype] = useState(null);
   const [succ, setSucc] = useState(false);
+
+
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   const uploadImage = async () => {
     const fileId = 'unique()';
@@ -151,59 +155,91 @@ const UpdateProductScreen = ({route}) => {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.container}>
-        <Button style={styles.button} mode="outlined" onPress={pickImage}>
-          Pick an image from camera roll
-        </Button>
+    <ScrollView
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? '#121212' : '#fff' },
+      ]}
+    >
+      <Button
+        style={[
+          styles.button,
+          { borderColor: isDarkMode ? '#fff' : '#007BFF', color: '#007BFF' },
+        ]}
+        mode="outlined"
+        onPress={pickImage}
+      >
+        Pick an image from camera roll
+      </Button>
 
-        {uri && (
-          <Image
-            source={{uri: uri}}
-            style={styles.image}
-            resizeMode="contain"
-          />
-        )}
-
-        <Button style={styles.button} mode="contained" onPress={uploadImage}>
-          Upload Image
-        </Button>
-
-        {succ && <Text style={styles.successText}>UPLOADED</Text>}
-
-        {/* {(image||succ) ? <Text style={styles.successText}>UPLOADED</Text> : <Text style={styles.failText}>NOT UPLOADED</Text>} */}
-        <TextInput
-          style={styles.input}
-          placeholder="Product Name"
-          value={name}
-          onChangeText={text => setName(text)}
+      {uri && (
+        <Image
+          source={{ uri: uri }}
+          style={styles.image}
+          resizeMode="contain"
         />
+      )}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Product Price"
-          value={price}
-          onChangeText={text => setPrice(text)}
-          keyboardType="numeric"
-        />
+      <Button
+        style={[
+          styles.button,
+          { backgroundColor: isDarkMode ? '#292929' : '#007BFF' },
+        ]}
+        mode="contained"
+        onPress={uploadImage}
+      >
+        Upload Image
+      </Button>
 
-        <Text style={styles.label}>Availability:</Text>
-        <RadioButton.Group
-          onValueChange={value => setAvailability(value)}
-          value={availability}>
-          <View style={styles.radioButtonContainer}>
-            <Text>Yes</Text>
-            <RadioButton value={true} />
-          </View>
-          <View style={styles.radioButtonContainer}>
-            <Text>No</Text>
-            <RadioButton value={false} />
-          </View>
-        </RadioButton.Group>
-        <Button style={styles.button} mode="contained" onPress={updateProduct}>
-          Update Product
-        </Button>
-      </View>
+      {succ && (
+        <Text style={[styles.successText, { color: isDarkMode ? '#fff' : '#000' }]}>
+          UPLOADED
+        </Text>
+      )}
+
+      <TextInput
+        style={[styles.input, { color: isDarkMode ? '#fff' : '#000' }]}
+        placeholder="Product Name"
+        value={name}
+        onChangeText={(text) => setName(text)}
+      />
+
+      <TextInput
+        style={[styles.input, { color: isDarkMode ? '#fff' : '#000' }]}
+        placeholder="Product Price"
+        value={price}
+        onChangeText={(text) => setPrice(text)}
+        keyboardType="numeric"
+      />
+
+      <Text style={[styles.label, { color: isDarkMode ? '#fff' : '#000' }]}>
+        Availability:
+      </Text>
+
+      <RadioButton.Group
+        onValueChange={(value) => setAvailability(value)}
+        value={availability}
+      >
+        <View style={styles.radioButtonContainer}>
+          <Text style={{ color: isDarkMode ? '#fff' : '#000' }}>Yes</Text>
+          <RadioButton value={true} />
+        </View>
+        <View style={styles.radioButtonContainer}>
+          <Text style={{ color: isDarkMode ? '#fff' : '#000' }}>No</Text>
+          <RadioButton value={false} />
+        </View>
+      </RadioButton.Group>
+
+      <Button
+        style={[
+          styles.button,
+          { backgroundColor: isDarkMode ? '#292929' : '#007BFF' },
+        ]}
+        mode="contained"
+        onPress={updateProduct}
+      >
+        Update Product
+      </Button>
     </ScrollView>
   );
 };
@@ -212,7 +248,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    justifyContent: 'center',
+    // justifyContent: 'center',
   },
   heading: {
     fontSize: 24,

@@ -10,6 +10,7 @@ import {
   RefreshControl,
   Modal,
   TouchableOpacity,
+  useColorScheme,
 } from 'react-native';
 import {Client, Databases, Query} from 'appwrite';
 import {useNavigation} from '@react-navigation/native';
@@ -33,6 +34,8 @@ const ProductScreen = () => {
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
   const [fullScreenImage, setFullScreenImage] = useState(null);
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   const navigation = useNavigation();
 
@@ -81,11 +84,20 @@ const ProductScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[
+      styles.container,
+      {backgroundColor: isDarkMode ? '#000' : '#fff'},
+    ]}>
       <TextInput
         placeholder="Search products..."
         onChangeText={text => setSearchText(text)}
-        style={styles.searchInput}
+        style={[
+          styles.searchInput,
+          {
+            borderColor: isDarkMode ? '#888' : 'gray',
+            color: isDarkMode ? '#fff' : '#000',
+          },
+        ]}
       />
       <FlatList
         data={filteredProducts}
@@ -103,8 +115,14 @@ const ProductScreen = () => {
             />
             </TouchableOpacity>
             <View style={styles.productInfo}>
-              <Text style={styles.productTitle}>{item.Name}</Text>
-              <Text style={styles.productQuantity}>Price: Rs.{item.Price}</Text>
+              <Text style={[
+                  styles.productTitle,
+                  {color: isDarkMode ? '#fff' : '#000'},
+                ]}>{item.Name}</Text>
+              <Text style={[
+                  styles.productQuantity,
+                  {color: isDarkMode ? '#fff' : '#000'},
+                ]}>Price: Rs.{item.Price}</Text>
               <Text
                 style={[
                   styles.productAvailability,

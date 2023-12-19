@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, Alert, StyleSheet } from 'react-native';
+import { View, TextInput, Button, Alert, StyleSheet, useColorScheme } from 'react-native';
 import { Client, Databases, Query } from 'appwrite';
 
 const DATABASE_ID = '6532eaf0a394c74aeb32';
@@ -17,6 +17,8 @@ const databases = new Databases(client);
 const UpdateCustomerNameScreen = ({ route, navigation }) => {
   const [phoneNumber, setPhoneNumber] = useState('');
   const [customerName, setCustomerName] = useState('');
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
   const handleUpdate = () => {
     if(phoneNumber && customerName) {
@@ -57,21 +59,35 @@ else{
 }};
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? '#121212' : '#fff' },
+      ]}
+    >
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          { color: isDarkMode ? '#fff' : '#000', borderColor: isDarkMode ? '#fff' : 'gray' },
+        ]}
         placeholder="Customer Phone Number"
         onChangeText={setPhoneNumber}
         value={phoneNumber}
         keyboardType="numeric"
       />
       <TextInput
-        style={styles.input}
+        style={[
+          styles.input,
+          { color: isDarkMode ? '#fff' : '#000', borderColor: isDarkMode ? '#fff' : 'gray' },
+        ]}
         placeholder="Customer Name"
         onChangeText={setCustomerName}
         value={customerName}
       />
-      <Button title="Update Customer Name" onPress={handleUpdate} />
+      <Button
+        title="Update Customer Name"
+        onPress={handleUpdate}
+      />
     </View>
   );
 };

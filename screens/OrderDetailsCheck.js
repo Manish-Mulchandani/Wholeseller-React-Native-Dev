@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   Modal,
+  useColorScheme,
 } from 'react-native';
 // import OrderDetails from './OrderDetails';
 import {Client, Databases, Query} from 'appwrite';
@@ -30,6 +31,8 @@ const databases = new Databases(client);
 const OrderDetailsCheck = ({route}) => {
   const {products} = route.params;
   const [fullScreenImage, setFullScreenImage] = useState(null);
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
   // console.log("hello")
   // console.log(products)
 
@@ -72,30 +75,41 @@ const OrderDetailsCheck = ({route}) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.productName}>{products[0].Customer_name || products[0].Phone_Number}</Text>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? '#121212' : '#fff' },
+      ]}
+    >
+      <Text style={[styles.productName, { color: isDarkMode ? '#fff' : '#000' }]}>
+        {products[0].Customer_name || products[0].Phone_Number}
+      </Text>
       <FlatList
         data={products}
-        keyExtractor={item => item.$id}
-        renderItem={({item}) => (
+        keyExtractor={(item) => item.$id}
+        renderItem={({ item }) => (
           <View style={styles.productItem}>
             <View style={styles.imageContainer}>
-            <TouchableOpacity onPress={() => openFullScreenImage(`${item.Image}&output=webp`)}>
-              <Image
-                source={{uri: `${item.Image}&output=webp`}}
-                style={styles.productImage}
-                resizeMode="contain"
-              />
+              <TouchableOpacity onPress={() => openFullScreenImage(`${item.Image}&output=webp`)}>
+                <Image
+                  source={{ uri: `${item.Image}&output=webp` }}
+                  style={styles.productImage}
+                  resizeMode="contain"
+                />
               </TouchableOpacity>
             </View>
             <View style={styles.productDetails}>
-              <Text style={styles.productName}>{item.Name}</Text>
-              <Text style={styles.productPrice}>Price: Rs.{item.Price}</Text>
-              <Text style={styles.productQuantity}>
+              <Text style={[styles.productName, { color: isDarkMode ? '#fff' : '#000' }]}>
+                {item.Name}
+              </Text>
+              <Text style={[styles.productPrice, { color: isDarkMode ? '#fff' : '#000' }]}>
+                Price: Rs.{item.Price}
+              </Text>
+              <Text style={[styles.productQuantity, { color: isDarkMode ? '#fff' : '#000' }]}>
                 Quantity: {item.Quantity}
               </Text>
               {item.Remark && (
-                <Text style={styles.productRemarks}>
+                <Text style={[styles.productRemarks, { color: isDarkMode ? '#ccc' : '#888' }]}>
                   Remarks: {item.Remark}
                 </Text>
               )}

@@ -9,6 +9,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Modal,
+  useColorScheme,
 } from 'react-native';
 import {Client, Databases, Query} from 'appwrite';
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -30,6 +31,8 @@ const CreateCart = ({cart, setCart}) => {
   const [searchText, setSearchText] = useState('');
   const [zoomedUri, setZoomedUri] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
+  const colorScheme = useColorScheme();
+  const isDarkMode = colorScheme === 'dark';
 
 
   useEffect(() => {
@@ -83,51 +86,63 @@ const CreateCart = ({cart, setCart}) => {
   );
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: isDarkMode ? '#121212' : '#fff' },
+      ]}
+    >
       <TextInput
         placeholder="Search products..."
-        onChangeText={text => setSearchText(text)}
-        style={styles.searchInput}
+        onChangeText={(text) => setSearchText(text)}
+        style={[
+          styles.searchInput,
+          { color: isDarkMode ? '#fff' : '#000', borderColor: isDarkMode ? '#fff' : 'gray' },
+        ]}
       />
       <FlatList
         data={filteredProducts}
-        keyExtractor={item => item.$id}
-        renderItem={({item}) => (
-          <View style={styles.cartItem}>
-            <TouchableOpacity
-              onPress={() => openFullScreenImage(`${item.Image}&output=webp`)}>
+        keyExtractor={(item) => item.$id}
+        renderItem={({ item }) => (
+          <View style={[styles.cartItem,{ backgroundColor: isDarkMode ? '#121212' : '#fff' },]}>
+            <TouchableOpacity onPress={() => openFullScreenImage(`${item.Image}&output=webp`)}>
               <Image
-                source={{uri: `${item.Image}&output=webp`}}
+                source={{ uri: `${item.Image}&output=webp` }}
                 style={styles.productImage}
                 resizeMode="contain"
               />
             </TouchableOpacity>
             <View style={styles.itemDetails}>
-              <Text style={styles.productTitle}>{item.Name}</Text>
-              <Text style={styles.productPrice}>
+              <Text style={[styles.productTitle, { color: isDarkMode ? '#fff' : '#000' }]}>
+                {item.Name}
+              </Text>
+              <Text style={[styles.productPrice, { color: isDarkMode ? '#fff' : '#000' }]}>
                 Rs.{item.Price.toFixed(2)}
               </Text>
               <Text
                 style={[
                   styles.productAvailability,
-                  {color: item.Available ? 'green' : 'red'},
-                ]}>
+                  { color: item.Available ? 'green' : 'red' },
+                ]}
+              >
                 Available: {item.Available ? 'Yes' : 'No'}
               </Text>
               <View style={styles.quantityContainer}>
                 <TouchableOpacity
                   onPress={() => handleDecrement(item)}
-                  disabled={!item.Available}>
+                  disabled={!item.Available}
+                >
                   <View style={styles.roundButton}>
                     <Text style={styles.roundButtonText}>-</Text>
                   </View>
                 </TouchableOpacity>
-                <Text style={styles.quantityText}>
+                <Text style={[styles.quantityText, { color: isDarkMode ? '#fff' : '#000' }]}>
                   {cart[item.$id] ? cart[item.$id].quantity : 0}
                 </Text>
                 <TouchableOpacity
                   onPress={() => handleIncrement(item)}
-                  disabled={!item.Available}>
+                  disabled={!item.Available}
+                >
                   <View style={styles.roundButton}>
                     <Text style={styles.roundButtonText}>+</Text>
                   </View>

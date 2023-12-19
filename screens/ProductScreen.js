@@ -8,9 +8,12 @@ import {
   Image,
   StyleSheet,
   RefreshControl,
+  Modal,
+  TouchableOpacity,
 } from 'react-native';
 import {Client, Databases, Query} from 'appwrite';
 import {useNavigation} from '@react-navigation/native';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const DATABASE_ID = '6532eaf0a394c74aeb32';
 const COLLECTION_ID = '6532eafc7e2ef6e5f9fb';
@@ -29,6 +32,7 @@ const ProductScreen = () => {
   const [products, setProducts] = useState([]);
   const [filteredProducts, setFilteredProducts] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [fullScreenImage, setFullScreenImage] = useState(null);
 
   const navigation = useNavigation();
 
@@ -72,6 +76,10 @@ const ProductScreen = () => {
     setRefreshing(true); // Start refreshing
   };
 
+  const openFullScreenImage = (imageUri) => {
+    setFullScreenImage([{ url: imageUri }]);
+  };
+
   return (
     <View style={styles.container}>
       <TextInput
@@ -87,11 +95,13 @@ const ProductScreen = () => {
         }
         renderItem={({item}) => (
           <View style={styles.productItem}>
+            <TouchableOpacity onPress={() => openFullScreenImage(`${item.Image}&output=webp`)}>
             <Image
               source={{uri: `${item.Image}&output=webp`}}
               style={styles.productImage}
               resizeMode="contain"
             />
+            </TouchableOpacity>
             <View style={styles.productInfo}>
               <Text style={styles.productTitle}>{item.Name}</Text>
               <Text style={styles.productQuantity}>Price: Rs.{item.Price}</Text>
@@ -107,6 +117,15 @@ const ProductScreen = () => {
           </View>
         )}
       />
+      {fullScreenImage && (
+        <Modal visible={true} transparent={true}>
+          <ImageViewer
+            imageUrls={fullScreenImage}
+            enableSwipeDown
+            onSwipeDown={() => setFullScreenImage(null)}
+          />
+        </Modal>
+      )}
     </View>
   );
 };

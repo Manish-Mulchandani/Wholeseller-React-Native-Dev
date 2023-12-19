@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -7,10 +7,12 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  Modal,
 } from 'react-native';
 // import OrderDetails from './OrderDetails';
 import {Client, Databases, Query} from 'appwrite';
 import {Button} from 'react-native-paper';
+import ImageViewer from 'react-native-image-zoom-viewer';
 
 const DATABASE_ID = '6532eaf0a394c74aeb32';
 const COLLECTION_ID = '6533aad5270260d0d839';
@@ -27,8 +29,24 @@ const databases = new Databases(client);
 
 const OrderDetailsCheck = ({route}) => {
   const {products} = route.params;
+  const [fullScreenImage, setFullScreenImage] = useState(null);
   // console.log("hello")
   // console.log(products)
+
+  const checkRemoveOrder = () => {
+    Alert.alert(
+      'Confirm Order',
+      'Are you sure you want to place this order?',
+      [
+        {
+          text: 'Cancel',
+          style: 'cancel',
+        },
+        {text: 'Delete Order', onPress: () => handleRemoveOrder()},
+      ],
+    );
+
+  }
 
   const handleRemoveOrder = async () => {
     const response = await databases.listDocuments(DATABASE_ID, COLLECTION_ID, [
@@ -49,6 +67,10 @@ const OrderDetailsCheck = ({route}) => {
     Alert.alert('Order Removed', 'Order Removed successfully');
   };
 
+  const openFullScreenImage = (imageUri) => {
+    setFullScreenImage([{ url: imageUri }]);
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.productName}>{products[0].Customer_name || products[0].Phone_Number}</Text>
@@ -58,11 +80,13 @@ const OrderDetailsCheck = ({route}) => {
         renderItem={({item}) => (
           <View style={styles.productItem}>
             <View style={styles.imageContainer}>
+            <TouchableOpacity onPress={() => openFullScreenImage(`${item.Image}&output=webp`)}>
               <Image
                 source={{uri: `${item.Image}&output=webp`}}
                 style={styles.productImage}
                 resizeMode="contain"
               />
+              </TouchableOpacity>
             </View>
             <View style={styles.productDetails}>
               <Text style={styles.productName}>{item.Name}</Text>
@@ -79,9 +103,18 @@ const OrderDetailsCheck = ({route}) => {
           </View>
         )}
       />
-      <TouchableOpacity onPress={handleRemoveOrder} style={styles.orderButton}>
+      <TouchableOpacity onPress={checkRemoveOrder} style={styles.orderButton}>
         <Text style={styles.orderButtonText}>Remove Order</Text>
       </TouchableOpacity>
+      {fullScreenImage && (
+        <Modal visible={true} transparent={true}>
+          <ImageViewer
+            imageUrls={fullScreenImage}
+            enableSwipeDown
+            onSwipeDown={() => setFullScreenImage(null)}
+          />
+        </Modal>
+      )}
     </View>
   );
 };

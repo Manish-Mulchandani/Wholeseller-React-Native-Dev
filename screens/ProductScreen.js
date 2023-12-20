@@ -11,6 +11,7 @@ import {
   Modal,
   TouchableOpacity,
   useColorScheme,
+  Alert,
 } from 'react-native';
 import {Client, Databases, Query} from 'appwrite';
 import {useNavigation} from '@react-navigation/native';
@@ -54,6 +55,7 @@ const ProductScreen = () => {
         })
         .catch(function (error) {
           console.log(error); // Handle the error appropriately
+          Alert.alert('Products not Loaded. Check your internet connection and restart again')
         })
         .finally(function () {
           setRefreshing(false); // Stop refreshing when done

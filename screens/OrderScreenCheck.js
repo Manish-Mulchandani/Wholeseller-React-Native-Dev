@@ -8,6 +8,7 @@ import {
   ScrollView,
   RefreshControl,
   useColorScheme,
+  Alert,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {Client, Databases, Query} from 'appwrite';
@@ -58,6 +59,7 @@ const OrderScreenCheck = () => {
         },
         function (error) {
           console.log(error); // Failure
+          Alert.alert('Error displaying orders', 'Check Internet connection and refresh the app')
         },
       )
       .finally(function () {

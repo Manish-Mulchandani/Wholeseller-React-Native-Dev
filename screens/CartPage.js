@@ -90,16 +90,18 @@ const CartPage = ({cart, setCart}) => {
           promise.then(
             function (response) {
               console.log(response); // Success
+              Alert.alert('Order Placed', 'Your order has been placed successfully');
             },
             function (error) {
               console.log(error); // Failure
+              Alert.alert('Order Not Placed', 'Retry placing your order and check internet connection');
             },
           );
         }
       };
       addOrdersToAppwrite();
       //console.log(cart)
-      Alert.alert('Order Placed', 'Your order has been placed successfully');
+      
       //setModalVisible(true)
     }
   };

@@ -50,6 +50,7 @@ const CreateCart = ({cart, setCart}) => {
       })
       .catch(function (error) {
         console.log(error); // Handle the error appropriately
+        Alert.alert('Error displaying products', 'Check Internet connection and refresh the app')
       });
   }, []); // Empty dependency array to run the effect only once
 
